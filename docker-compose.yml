@@ -1,0 +1,14 @@
+# Nginx serves Vite static build; proxies /api and /ws to Docker host "api-gateway".
+# Use with the backend stack network, or adjust edge.conf / VITE_API_BASE_URL for a public API URL.
+
+services:
+  web:
+    image: ${DOCKER_REGISTRY:-myapp}/web:${DOCKER_TAG:-local}
+    build:
+      context: .
+      dockerfile: deploy/fe/docker/Dockerfile.web
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api}
+    restart: unless-stopped
+    ports:
+      - "80:80"
